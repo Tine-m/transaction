@@ -5,8 +5,6 @@
 - Identify **concurrency issues**
 - Use **isolation levels** to manage concurrency.
 - Implement **transaction management** in application code. 
-- Handle **deadlocks** and implement proper **locking mechanisms**.
-
 ---
 
 # **1️⃣Transactions**
