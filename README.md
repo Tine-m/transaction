@@ -166,7 +166,7 @@ COMMIT;
 
 ---
 
-## Test  in MySQL Workbench. [Go to Exercise](exercise1.md)
+## Test Consistent Reads in MySQL Workbench. [Go to Exercise](exercise1.md)
 --- 
 
 ## 📌 Committed Reads
@@ -286,8 +286,11 @@ public void updatePlayerRank(int playerId) {
 ---
 
 # **7️⃣ Deadlocks**
+
 A deadlock occurs when two or more transactions block each other by holding locks on resources that the other transactions need. As a result, neither transaction can proceed, and the database must detect and resolve the deadlock.
-[Go to deadlock notes and exercises](deadlocks.md).
+
+### [Go to deadlock exercises](deadlocks.md).
+
 ---
 
 🎯 **Great you reached the end! Hopefully you have practised transaction management doing the exercise work 🚀**
