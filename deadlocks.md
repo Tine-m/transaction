@@ -238,7 +238,8 @@ Include the required dependencies in your **Maven** project:
 
 Inside your **`src/main/resources/`** folder, create a **`logback.xml`** file with the following configuration:
 
-### **1️⃣ Basic Console Logging**
+**1️⃣ Basic Console Logging**
+
 ```xml
 <configuration>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -257,9 +258,9 @@ Inside your **`src/main/resources/`** folder, create a **`logback.xml`** file wi
 2024-03-04 14:30:12 [main] INFO  com.example.Main - Application started
 ```
 
----
 
-### **2️⃣ File-Based Logging with Log Rotation**
+ **2️⃣ File-Based Logging with Log Rotation**
+ 
 If you need **log rotation (new log file daily, keeping history)**, use this `logback.xml`:
 ```xml
 <configuration>
@@ -284,7 +285,6 @@ If you need **log rotation (new log file daily, keeping history)**, use this `lo
 - Create a **new log file daily** (`app-YYYY-MM-DD.log`)
 - **Keep logs for 30 days** (`maxHistory`)
 
-
 **📌 Step 3: Use SLF4J in Java Code**
 
 ```java
@@ -301,8 +301,6 @@ public class LoggingExample {
     }
 }
 ```
-✅ **No need to manually write log files**—SLF4J + Logback **automatically** handles logging!
-
 
 **📌 Step 4: Change Log Level Dynamically**
 
