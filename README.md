@@ -162,7 +162,8 @@ SELECT * FROM Players WHERE player_id = 1; -- Another transaction/session will s
 COMMIT;
 ```
 
-💡 **The second SELECT does not see the update** (if the query is made by another transation). Let's test that in MySQL Workbench. [Go to Exercise](exercise1.md)
+💡 **The second SELECT does not see the update** (if the query is made by another transation). 
+## Let's test that in MySQL Workbench. [Go to Exercise](exercise1.md)
 
 
 ## 📌 Committed Reads
@@ -284,55 +285,6 @@ public void updatePlayerRank(int playerId) {
 # **7️⃣ Deadlocks**
 A deadlock occurs when two or more transactions block each other by holding locks on resources that the other transactions need. As a result, neither transaction can proceed, and the database must detect and resolve the deadlock.
 [Go to deadlock notes and exercises](deadlocks.md).
-
-## **📝 2️⃣ Exercises (Hands-on Practice)**
-### **Exercise 1: Basic Transactions**
-- Create two transactions: one **withdraws** points, the other **deposits**.
-- Ensure both succeed or both roll back.
-
-### **Exercise 2: Concurrency Control**
-- Run two concurrent updates to the same player’s rank.
-- Observe what happens at different isolation levels.
-
-### **Exercise 3: Deadlock Simulation**
-- Create two transactions that access the same tables in different order.
-- Observe and handle the deadlock.
-
-### **Exercise 4: Java Implementation**
-- Implement transaction management using **JDBC**.
-- Implement the same logic using **JPA (`@Transactional`)**.
-
 ---
 
-## **📜 3️⃣ Hand-in Assignment**
-### **Scenario:** Opposite of the one used in class (E-sports if Fitness was used in class and vice versa).
-
-📌 **Tasks:**
-1. **Design a transaction-heavy operation**, such as:
-   - Booking a tournament match (E-sports) or reserving a gym session (Fitness).
-2. **Implement transactions** in MySQL using JDBC/JPA.
-3. **Experiment with different isolation levels** and document the results.
-4. **Simulate and resolve a concurrency issue** (e.g., lost update or deadlock).
-5. **Write a short report** explaining:
-   - Which isolation level was chosen and why.
-   - How concurrency issues were handled.
-   - How transaction failures were managed.
-
-### **📁 Deliverables:**
-- SQL scripts
-- Java code (JDBC and/or JPA)
-- Report (2-3 pages)
-
----
-
-## **📌 Evaluation Criteria**
-| **Criteria** | **Description** |
-|-------------|----------------|
-| **Correctness** | Transactions handle concurrency properly. |
-| **Performance** | Efficient transaction handling and minimal locks. |
-| **Error Handling** | Proper rollback and exception handling. |
-| **Documentation** | Clear explanation of isolation levels and concurrency control. |
-
----
-
-🎯 **Good luck with the course! 🚀**
+🎯 **Great you reached the end! Hopefully you have practised transaction management doing the exercise work 🚀**
