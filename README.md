@@ -4,7 +4,7 @@
 - Understand the **ACID** properties of transactions.
 - Identify **concurrency issues**
 - Use **isolation levels** to manage concurrency.
-- Implement **transaction management** in application code. 
+- Implement **transaction management** and **concurrency issues** in application code. 
 ---
 
 # **1️⃣Transactions**
