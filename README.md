@@ -163,8 +163,11 @@ COMMIT;
 ```
 
 💡 **The second SELECT does not see the update** (if the query is made by another transation). 
-## Let's test that in MySQL Workbench. [Go to Exercise](exercise1.md)
 
+---
+
+## Test  in MySQL Workbench. [Go to Exercise](exercise1.md)
+--- 
 
 ## 📌 Committed Reads
 - We want to modify data and we want to work on most updated (committed) data.
