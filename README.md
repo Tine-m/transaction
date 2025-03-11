@@ -32,20 +32,21 @@ We will cover concurrency issues in the next section.
 ---
 # **2️⃣The Need for Concurrency Control**
 
-**Isolation** determines transaction visibility between processes. A transaction should take place in such a way that it is the only transaction that is accessing some data item.
+There are four common types of concurrency problems:
 
-Isolation levels define the degree to which a transaction is isolated from data modifications made by any other transaction. A transaction isolation level is defined by the following phenomena: 
 | Issue | Description |
 |-------|------------|
-| **Lost Update** | Two transactions overwrite each other's changes. |
+| **Lost Update** | Two transactions overwrite each other's changes because they are both based on originally read values. |
 | **Dirty read** | A transaction reads uncommitted changes from another transaction. |
-| **Non-repeatable Read** | A transaction reads the same row twice and gets a different value each time |
+| **Non-repeatable Read** | A transaction reads the same row twice and gets a different value each time bacause another transation has update the data inbetween the two reads. |
 | **Phantom Read** | A transaction sees new rows when repeating a query, due to inserts by another transaction. |
 
-Let's look at some examples of concurrency problems.
+
+Some examples are listed below.
+
 
 ### **Lost Update Problem**
-Successfully completed update is overridden by another user.
+A *lost update* occurs when two transactions select the same row and then update the row based on the values originally selected. Since each transaction is unaware of the other, the later update overwrites the earlier update.
 
 - T1 withdrawing £10 from an account with balx, initially £100.
 - T2 depositing £100 into same account. 
@@ -86,15 +87,9 @@ Database systems have their own infrastructure components to support transaction
 
 The objective of a concurrency control protocol is to schedule transactions in such a way as to avoid any interference. We could run transactions serially, but this limits the degree of concurrency and parallelism in the system. 
 
-**Serializability** ensures correct exeution order. Meaning that the **final result of executing multiple concurrent transactions is the same as if they were executed in some serial order**.
-This is the **strongest level of isolation**, but full serializability is expensive and can reduce parallel execution. <br>
+**Serializability** ensures correct execution order. Meaning that the **final result of executing multiple concurrent transactions is the same as if they were executed in some serial order**. This is the *strongest level of isolation* between concurrent transactions, but full serializability is expensive and can reduce parallel execution. <br>
 
-**Isolation Levels:**
-The SQL standard describes four transaction isolation levels. Each of the transaction isolation levels uses different strategies to balance consistency and concurrency on the database.
-
-**REPEATABLE READ isolation level** is default for MySQL and MariaDB whereas **READ COMMITTED** isolation level is the default for SQL Server, PostgreSQL and Oracle.
-
-So this is default for MySQL:
+**Isolation Levels** define the degree to which a transaction is isolated from data modifications made by any other transaction. The SQL standard describes four transaction isolation levels: 
 
 | Isolation Level | Prevents Dirty Reads | Prevents Non-repeatable Reads | Prevents Phantom Reads |
 |---------------|-------------------|-----------------------|------------------|
@@ -102,6 +97,9 @@ So this is default for MySQL:
 | **READ COMMITTED** | ✅ Yes | ❌ No | ❌ No |
 | **REPEATABLE READ** (MySQL default) | ✅ Yes | ✅ Yes | ❌ No |
 | **SERIALIZABLE** | ✅ Yes | ✅ Yes | ✅ Yes |
+
+**REPEATABLE READ isolation level** is default for MySQL and MariaDB whereas **READ COMMITTED** isolation level is the default for SQL Server, PostgreSQL and Oracle.
+
 
 There are different **Concurrency Control Techniques** to achieve serializability and isolation:
 - **Two-Phase Locking (2PL)** – Transactions acquire all locks before releasing any. The data item to be accessed is locked by the first transaction. After performing operations transaction unlocks the data item, so that it can be accessed by other transactions. 
