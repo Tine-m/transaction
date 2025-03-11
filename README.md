@@ -132,19 +132,16 @@ Generally, a transaction must claim a **shared** (read) or **exclusive** (write)
 - An exclusive lock gives transaction exclusive access to that item.- 
 - Lock requests are made to concurrency control manager. Transaction can proceed only after request is granted.
 
-There are **row locks**, **table locks** and **range locks**. An examle of a range lock: all employees that have a salary between 50.000-100.000.
+There are **row locks**, **table locks** and **range locks**. An example of a range lock: all employees that have a salary between 50.000-100.000.
 
-Row-level locking can lock the entire table, if the WHERE clause of a statement cannot use an index - for instance an UPDATE statement.  
-If a high number of single-row locks would be less efficient than a single table-level lock, the row-level locking system can choose table-level locking instead for performance reasons (called lock escalation).
-
-Some systems allow transaction to upgrade read lock to an exclusive lock, or downgrade exclusive lock to a shared lock.
+If a high number of single-row locks would be less efficient than a single table-level lock, the row-level locking system can choose table-level locking instead for performance reasons (called lock escalation). For instance, row-level locking can lock the entire table, if the WHERE clause of a statement cannot use an index in an UPDATE statement.  
 
 ---
 # 5️⃣ **MySQL Examples**
 
-## 📌Consistent Reads
-
-- We want rereads of a data item to remain consistent during the entire transaction.
+## 📌Prevents Non-repeatable Reads
+- We use the MySQL default InmnoDB insolation level **REPEATABLE READ**
+- We want consistens reads, i.e. rereads of a data item to remain consistent during the entire transaction.
 - In a transaction, all **regular SELECT queries** read from a **consistent snapshot** taken by the first query.
 - This snapshot includes changes from **committed transactions before that point** but ignores **uncommitted or later transactions** (using InnoDB's [multi version concurrency control](https://dev.mysql.com/doc/refman/8.4/en/glossary.html#glos_mvcc) which is not universal database technique).
 - To **refresh the snapshot**, **commit** the transaction and start a new query.
@@ -160,9 +157,8 @@ COMMIT;
 
 💡 **The second SELECT does not see the update** (if the query is made by another transation). 
 
----
+## Test this yourself in MySQL Workbench. [Go to Exercise](exercise1.md)
 
-## Test Consistent Reads in MySQL Workbench. [Go to Exercise](exercise1.md)
 --- 
 
 ## 📌 Committed Reads
