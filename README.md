@@ -4,9 +4,9 @@
 - Understand the **ACID** properties of transactions.
 - Identify **concurrency issues**
 - Use **isolation levels** to manage concurrency.
-- Implement **transaction management** and **concurrency issues** in application code. 
+- Implement **transaction management** in application code. 
+- Handle **deadlocks** and implement proper **locking mechanisms**.
 ---
-
 # **1️⃣Transactions**
 
 To implement a large-scale, busy, or highly reliable database application, it is important to understand transactions and locking. 
@@ -293,4 +293,4 @@ public void updatePlayerRank(int playerId) {
 
 A deadlock occurs when two or more transactions block each other by holding locks on resources that the other transactions need. As a result, neither transaction can proceed, and the database must detect and resolve the deadlock.
 
-### 🔍[Go to the deadlock exercises](deadlocks.md) to see some deadlock examples and try them out for yourself on your own computer.
+### 🔍[Go to the deadlock exercises](deadlocks.md) to work with deadlock code examples.

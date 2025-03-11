@@ -1,48 +1,52 @@
-# **Deadlocks**
+# **Deadlock Example**
 
 
-## **📌 Example: How Deadlocks Occur (Money Transfer Scenario)**
+## **📌 How Deadlocks Occur (Money Transfer Scenario)**
 Imagine **two transactions transferring money between two accounts**, but in **reverse order**, leading to a deadlock:
 
-### **🧑‍💻 Transaction A (Transfers $100 from Account 1 to Account 2)**
+### **🧑‍💻 Transaction A (Wants to transfers $100 from Account 1 to Account 2)**
 ```sql
 START TRANSACTION;
 UPDATE Accounts SET balance = balance - 100 WHERE account_id = 1;  -- Locks account_id = 1
 -- Some processing time (Transaction A does NOT commit yet)
 ```
 
-### **🧑‍💻 Transaction B (Transfers $200 from Account 2 to Account 1 at the Same Time)**
+### **🧑‍💻 Transaction B (Wants to transfer $200 from Account 2 to Account 1 at the same time)**
 ```sql
 START TRANSACTION;
 UPDATE Accounts SET balance = balance - 200 WHERE account_id = 2;  -- Locks account_id = 2
 -- Some processing time (Transaction B does NOT commit yet)
 ```
 
-### **🧑‍💻 Transaction A (Continues, But Now Blocked)**
+### **🧑‍💻 Transaction A (Continues, but is now blocked)**
 ```sql
 UPDATE Accounts SET balance = balance + 100 WHERE account_id = 2;  -- 🚨 BLOCKED! Transaction B has this lock.
 ```
 
-### **🧑‍💻 Transaction B (Continues, Also Blocked)**
+### **🧑‍💻 Transaction B (Continues, but is also blocked)**
 ```sql
 UPDATE Accounts SET balance = balance + 200 WHERE account_id = 1;  -- 🚨 BLOCKED! Transaction A has this lock.
 ```
 
 🚨 **Deadlock occurs!** MySQL will automatically detect and resolve the deadlock by rolling back **one of the transactions**.
 
-### **Test the example** in MySQL Workbench on your own computer by opening two connections to represent two sessions (transaction A and B respectively).
+### **Test the scenario** in MySQL Workbench by opening two connections to represent two sessions (transaction A and B respectively).
 
 ---
 
-## **🛠️ How to Prevent Deadlocks?**
+## **🛠️How to Prevent Deadlocks?**
+
 1️⃣ **Access tables in a consistent order** → Always update `account_id = 1` first, then `account_id = 2`.
+
 2️⃣ **Use `LOCK TABLES`** → Prevents concurrent access to multiple rows.
+
 3️⃣ **Use `FOR UPDATE`** → Ensures rows are locked before modifying them.
+
 4️⃣ **Set a timeout** → Prevents waiting indefinitely (`SET innodb_lock_wait_timeout = 5;`).
 
 ---
-## **📌 Exercise with Deadlocks using MySQL server and Java JDBC**
-Try out the following examples on your own computer. You can use another databaser server and possibly another programming language of your own choice. The example os based on MySQL and Java.
+## **📌 Deadlocks Exercise using MySQL and Java**
+Try out the following examples on your own computer. You can use another databaser server and possibly another programming language of your own choice. The example os based on MySQL and Java JDBC.
 
 ## **📝 SQL Script: Create Database and Table**
 ```sql
@@ -62,7 +66,9 @@ ON DUPLICATE KEY UPDATE balance = balance;
 
 ## **🖥️ Basic JDBC Example with Deadlock Risk**
 This Java code **does not yet handle deadlocks**, so it may fail if a deadlock occurs.
-You should create locks in the database before running the application to experiement with deadlocks. You can do this by starting a transaction in MySQL Workbench without committing it like in the money transfer example above.
+
+You should create locks in the database before running the application to experiment with deadlocks. 
+You can do this by starting a transaction in MySQL Workbench without committing it like in the money transfer example above. This should provoke a deadlock situation when you run the Java program.
 
 ```java
 import java.sql.*;
@@ -204,7 +210,7 @@ Instead of manual file writing, we could take a more professional approach and u
 
 Rewrite manual logging code and use a logging framework instead. If you choose to use SLF4J & Logback, you can follow along instructions below.
 
-# **📜 Setting Up Logging in Java with SLF4J & Logback**
+**📜 Setting Up Logging in Java with SLF4J & Logback**
 
 SLF4J (Simple Logging Facade for Java) with Logback allows:
 

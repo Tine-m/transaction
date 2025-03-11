@@ -1,4 +1,4 @@
-# **Exercise: Simulating Snapshot Isolation in MySQL Workbench**
+# **Experiment with Concurrency in MySQL Workbench**
 
 ---
 
@@ -6,7 +6,7 @@
 
 ### **1️⃣ Open Two Sessions in MySQL Workbench**
 1. Open **MySQL Workbench**.
-2. Open **two separate connections** to the same database.
+2. Open **two separate connections** to the same database to simulate multiple users.
 3. Each connection represents a **different session**.
 
 ---
@@ -37,7 +37,7 @@ SELECT * FROM Players WHERE player_id = 1; -- Reads from snapshot
 
 🔍 **Expected Behavior:** 
 - This will read the data **as it exists at the start of the transaction**.
-- Even if another transaction updates the row, this session will **continue seeing the old value** until it commits.
+- Even if another transaction updates the row, this session will **continue seeing the old value** until it commits (due to snapshot isolation).
 
 ---
 
