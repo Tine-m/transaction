@@ -139,8 +139,7 @@ If a high number of single-row locks would be less efficient than a single table
 ---
 # 5️⃣ **MySQL Examples**
 
-## 📌Prevents Non-repeatable Reads
-- We use the MySQL default InmnoDB insolation level **REPEATABLE READ**
+## 📌 Consistent Reads (Prevent Non-repeatable Reads)
 - We want consistens reads, i.e. rereads of a data item to remain consistent during the entire transaction.
 - In a transaction, all **regular SELECT queries** read from a **consistent snapshot** taken by the first query.
 - This snapshot includes changes from **committed transactions before that point** but ignores **uncommitted or later transactions** (using InnoDB's [multi version concurrency control](https://dev.mysql.com/doc/refman/8.4/en/glossary.html#glos_mvcc) which is not universal database technique).
@@ -155,16 +154,16 @@ SELECT * FROM Players WHERE player_id = 1; -- Another transaction/session will s
 COMMIT;
 ```
 
-💡 **The second SELECT does not see the update** (if the query is made by another transation). 
+💡 **The second SELECT does not see the update** (if the query is made by another transaction). 
 
-## Test this yourself in MySQL Workbench. [Go to Exercise](exercise1.md)
+🔍 Examine this yourself in MySQL Workbench. [Go to Exercise](exercise1.md)
 
 --- 
 
 ## 📌 Committed Reads
 - We want to modify data and we want to work on most updated (committed) data.
 - If you **query data and then modify it** within the same transaction, other transactions **can still change or delete** the same rows unless you lock the data.
-- To avoid inconsistencies, use ```FOR UPDATE``` to ensure you work with the latest committed values.
+- To avoid inconsistencies, use ```FOR UPDATE``` to ensure you work with the latest committed values and lock the data row.
 
 ```sql
 START TRANSACTION;
