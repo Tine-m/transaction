@@ -63,7 +63,7 @@ CREATE TABLE Matches (
 ---
 
 ## **📖 Read this First**
-Read this text first that describes and illustrates how application code can handle concurrency issues by means of so-called optimistic and pessimistic concurrency approaches.
+Read [this text first](app-concurrency.md) that describes and illustrates how application code can handle concurrency issues by means of so-called optimistic and pessimistic concurrency approaches.
 
 ## **📌 Exercises**
 
@@ -75,7 +75,7 @@ Read this text first that describes and illustrates how application code can han
 - Implement **version-based optimistic concurrency control** in Java using JDBC.
 - Ensure that only one registration is successful when two concurrent users try to register.
 
-#### **Example: Version Column for OCC**
+#### **Example: Version Column for Optimistic Concurrency Control**
 ```sql
 ALTER TABLE Tournaments ADD COLUMN version INT NOT NULL DEFAULT 1;
 ```
