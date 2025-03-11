@@ -111,10 +111,13 @@ START TRANSACTION;
 -- SQL Statements
 COMMIT;
 ```
+
+This statement sets the isolation level for the next new transaction. If you want to set the isolation level for all the transactions in a session, you can include the SESSION keyword (SET SESSION TRANSACTION ...). If you want the isolation level for alle sessions, you can include the GLOBAL keyword.   
+
 ---
 # 4️⃣ **Locking**🔒
 There are different **Concurrency Control Techniques** to achieve serializability and isolation:
-- **Two-Phase Locking (2PL)** – Transactions acquire all locks before releasing any. The data item to be accessed is locked by the first transaction. After performing operations transaction unlocks the data item, so that it can be accessed by other transactions. 
+- **Two-Phase Locking (2PL)** – Transactions acquire all locks before releasing any. The data item to be accessed is locked by the first transaction. After performing operations, the transaction unlocks the data item, so that it can be accessed by other transactions. 
 - **Timestamp Ordering** – Transactions execute based on timestamps.This protocol ensures that every conflicting read and write operations are executed in timestamp order
 - **Validation-Based Concurrency Control** – Transactions validate before committing.<br>
 
@@ -126,11 +129,11 @@ Locks are the most widely used approach for transactions to ensure serializabili
 Generally, a transaction must claim a **shared** (read) or **exclusive** (write) lock on a data item before read or write. In case of a write lock, it prevents other transactions from modifying the item or even reading it. 
 
 **Locking Basic Rules**
-- If transaction has shared(s) lock on item, it can only read, not update item.
-- If transaction has exclusive(x) lock on item, it can both read, update or delete item.
+- If a transaction has shared(s) lock on item, it can only read, not update item.
+- If a transaction has exclusive(x) lock on item, it can both read, update or delete item.
 - Reads cannot conflict, so more than one transaction can hold shared locks simultaneously on same item. 
-- An exclusive lock gives transaction exclusive access to that item.- 
-- Lock requests are made to concurrency control manager. Transaction can proceed only after request is granted.
+- An exclusive lock gives a transaction exclusive access to that item. 
+- Lock requests are made to concurrency control manager. Transactions can proceed only after request is granted.
 
 There are **row locks**, **table locks** and **range locks**. An example of a range lock: all employees that have a salary between 50.000-100.000.
 
@@ -139,10 +142,19 @@ If a high number of single-row locks would be less efficient than a single table
 ---
 # 5️⃣ **MySQL Examples**
 
-## 📌 Consistent Reads (Prevent Non-repeatable Reads)
-- We want consistens reads, i.e. rereads of a data item to remain consistent during the entire transaction.
-- In a transaction, all **regular SELECT queries** read from a **consistent snapshot** taken by the first query.
-- This snapshot includes changes from **committed transactions before that point** but ignores **uncommitted or later transactions** (using InnoDB's [multi version concurrency control](https://dev.mysql.com/doc/refman/8.4/en/glossary.html#glos_mvcc) which is not universal database technique).
+The simplest way to prevent concurrency problems is to change the default isolation level. 
+Recall that with the **Serializable** isolation level, each transaction is completely isolated from other transactions. All concurrency problems are eliminated by locking each resource, preventing other transactions from accessing it. 
+This can cause servere performance problems and this level is therefore seldom required (only in situations where phantom reads are not acceptable). 
+With the **Read Committed** isolation level we prevent dirty reads, since transactions don't see uncommited changes made by other transactions.   
+
+In the following code examples we will keep the MySQL default **Repeatable Read** level where rows read by a transaction will be read consistently within the same transaction. 
+Some of the scenarios demonstrate how we need to do some locking of our own (If we want to code a transaction that selects data and then inserts or updates data in related tables).
+
+## 📌 Consistent Reads
+- We want consistens reads, i.e. rereads of a data item to remain consistent during the entire transaction. 
+- Prevention from non-repeatable reads are automatically supported by the default isolation level.
+  - In a transaction, all **regular SELECT queries** read from a **consistent snapshot** taken by the first query.
+  - This snapshot includes changes from **committed transactions before that point** but ignores **uncommitted or later transactions** (using InnoDB's [multi version concurrency control](https://dev.mysql.com/doc/refman/8.4/en/glossary.html#glos_mvcc) which is not universal database technique).
 - To **refresh the snapshot**, **commit** the transaction and start a new query.
 
 
@@ -156,12 +168,12 @@ COMMIT;
 
 💡 **The second SELECT does not see the update** (if the query is made by another transaction). 
 
-🔍 Examine this yourself in MySQL Workbench. [Go to Exercise](exercise1.md)
+### 🔍 Verify this scenario in MySQL Workbench. [Go to Exercise](exercise1.md)
 
 --- 
 
 ## 📌 Committed Reads
-- We want to modify data and we want to work on most updated (committed) data.
+- We want to modify data and we want to work on the most updated (committed) data.
 - If you **query data and then modify it** within the same transaction, other transactions **can still change or delete** the same rows unless you lock the data.
 - To avoid inconsistencies, use ```FOR UPDATE``` to ensure you work with the latest committed values and lock the data row.
 
@@ -197,10 +209,9 @@ UPDATE Players SET ranking = ranking + 20 WHERE player_id = 1;
 
 ## 📌 Exclusive Lock
 
-- We want to place a **exclusive lock** on selected rows because we want to modify data/table and prevent modifications by other transactions.
-- Using `SELECT ... FOR UPDATE` (Exclusive Lock) locks the selected rows **as if an UPDATE statement was issued**.
+- We want to place a **exclusive lock** on selected rows because we want to modify data and prevent other transactions from reading or modifying these rows  until our own transaction commits.
+- `SELECT ... FOR UPDATE` locks the selected rows **as if an UPDATE statement was issued**.
 - Blocks **other transactions from modifying, deleting, or even locking** the same rows.
-- Ignores locks on old versions of records (undo logs reconstruct these instead).
 
 #### **Transaction 1 (Locks Row for Update)**
 ```sql
@@ -214,7 +225,7 @@ START TRANSACTION;
 UPDATE Players SET ranking = ranking + 30 WHERE player_id = 1; -- 🚨 Blocked
 SELECT * FROM Players WHERE player_id = 1 FOR SHARE; -- 🚨 Blocked
 ```
-✅ **Use case:** When you plan to update the selected rows and want to prevent conflicts.
+✅ **Use case:** When you plan to update the selected rows and want to prevent conflicts. If you don't need to prevent other transactions from reading the same rows,`SELECT ... FOR SHARE` provides better performance. 
 
 ## **📌 Lock a range**
 
@@ -249,6 +260,12 @@ INSERT INTO Players (player_id, username, ranking) VALUES (6, 'NewPlayer', 1200)
 # 6️⃣ **Managing Transactions in Java**
 
 **Using JDBC:**
+
+By default, MySQL and JDBC sessions use autocommit mode, which automatically commits INSERT, UPDATE and DELETE statements immediately after they are executed.
+If that is not what you want, you can use transactions to control when changes are committed. As we have seen in previous examples, this is done in SQL with the **START TRANSACTION** command.
+
+In JDBC code we disable the auto-commit mode by setting is false: ```connection.setAutoCommit(false); ```
+
 ```java
 Connection conn = DriverManager.getConnection(url, user, password);
 conn.setAutoCommit(false);
@@ -270,18 +287,10 @@ public void updatePlayerRank(int playerId) {
 }
 ```
 
-### **🔹 Handling Deadlocks**
-- **Use proper locking:** `SELECT ... FOR UPDATE`.
-- **Retry transactions if needed:** Catch `SQLState 40001` and retry.
-
 ---
 
 # **7️⃣ Deadlocks**
 
 A deadlock occurs when two or more transactions block each other by holding locks on resources that the other transactions need. As a result, neither transaction can proceed, and the database must detect and resolve the deadlock.
 
-### [Go to deadlock exercises](deadlocks.md).
-
----
-
-🎯 **Great you reached the end! Hopefully you have practised transaction management doing the exercise work 🚀**
+### 🔍[Go to the deadlock exercises](deadlocks.md) to see some deadlock examples and try them out for yourself on your own computer.
