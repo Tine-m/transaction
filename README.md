@@ -101,14 +101,6 @@ The objective of a concurrency control protocol is to schedule transactions in s
 **REPEATABLE READ isolation level** is default for MySQL and MariaDB whereas **READ COMMITTED** isolation level is the default for SQL Server, PostgreSQL and Oracle.
 
 
-There are different **Concurrency Control Techniques** to achieve serializability and isolation:
-- **Two-Phase Locking (2PL)** – Transactions acquire all locks before releasing any. The data item to be accessed is locked by the first transaction. After performing operations transaction unlocks the data item, so that it can be accessed by other transactions. 
-- **Timestamp Ordering** – Transactions execute based on timestamps.This protocol ensures that every conflicting read and write operations are executed in timestamp order
-- **Validation-Based Concurrency Control** – Transactions validate before committing.<br>
-
-Timestamping and locking are conservative (pessimistic) approaches: delay transactions in case they conflict with other transactions.
-Validation based control is an optimistic method assuming conflict is rare and only check for conflicts at commit.
-
 In MySQL [InnoDB](https://dev.mysql.com/doc/refman/8.4/en/innodb-introduction.html) is the default storage engine and it offers all four transaction isolation levels. It's [transaction model](https://dev.mysql.com/doc/refman/8.4/en/innodb-transaction-model.html) aims to combine the best properties of a multi-versioning database with traditional two-phase locking [source](https://dev.mysql.com/doc/refman/8.4/en/glossary.html#glos_mvcc).
 
 
@@ -121,6 +113,14 @@ COMMIT;
 ```
 ---
 # 4️⃣ **Locking**🔒
+There are different **Concurrency Control Techniques** to achieve serializability and isolation:
+- **Two-Phase Locking (2PL)** – Transactions acquire all locks before releasing any. The data item to be accessed is locked by the first transaction. After performing operations transaction unlocks the data item, so that it can be accessed by other transactions. 
+- **Timestamp Ordering** – Transactions execute based on timestamps.This protocol ensures that every conflicting read and write operations are executed in timestamp order
+- **Validation-Based Concurrency Control** – Transactions validate before committing.<br>
+
+Timestamping and locking are conservative (pessimistic) approaches: delay transactions in case they conflict with other transactions.
+Validation based control is an optimistic method assuming conflict is rare and only check for conflicts at commit.
+
 Locks are the most widely used approach for transactions to ensure serializability, i.e. to deny access to other transactions and so prevent incorrect updates.
 
 Generally, a transaction must claim a **shared** (read) or **exclusive** (write) lock on a data item before read or write. In case of a write lock, it prevents other transactions from modifying the item or even reading it. 
