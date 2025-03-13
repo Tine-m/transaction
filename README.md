@@ -21,7 +21,7 @@ A transaction must have the following **ACID Properties:**
   - **Durability**: Changes persist after commit.
 
 A transaction has states and can have one of two outcomes. If it completes successfully, the transaction is said to have **committed** and the database reaches a new consistent state. If the transaction does not end successfully, the transaction is **aborted** and the database must be restored to the consistent state before the transaction started. Such a transaction is **rolled back**.
-![state-diagram](https://github.com/user-attachments/assets/b6784197-f063-4910-bda3-c008edef88c4)
+![State-diagram](img/state-diagram.png)
 
  We have two main issues to deal with regarding transactions:
  - Failures of various kinds, such as hardware failures and system crashes during a transaction.
